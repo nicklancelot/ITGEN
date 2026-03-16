@@ -1,7 +1,7 @@
 # Étape 1 : builder l'image
 FROM php:8.2-fpm-alpine
 
-# Installer les dépendances système
+# Installer les dépendances système + PostgreSQL client pour Laravel
 RUN apk add --no-cache \
     bash \
     git \
@@ -16,7 +16,8 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     yarn \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    postgresql-dev \
+    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Installer Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -39,5 +40,5 @@ RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
 # Exposer le port
 EXPOSE 8000
 
-# Commande par défaut
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Migration automatique et lancement du serveur
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
