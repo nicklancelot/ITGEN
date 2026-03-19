@@ -101,17 +101,7 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Évolution mensuelle des cotisations (6 derniers mois) - pour MySQL
-        // $evolutionCotisations = Cotisation::select(
-        //     DB::raw('DATE_FORMAT(date, "%m/%Y") as mois'),
-        //     DB::raw('SUM(montant) as total')
-        // )
-        // ->where('date', '>=', now()->subMonths(6))
-        // ->groupBy('mois')
-        // ->orderBy('mois')
-        // ->get();
 
-        // Évolution mensuelle des cotisations pour SQLite (comme dans votre environnement)
         $evolutionCotisations = Cotisation::select(
             DB::raw("strftime('%m/%Y', date) as mois"),
             DB::raw('SUM(montant) as total')
